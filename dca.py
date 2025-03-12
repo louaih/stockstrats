@@ -6,7 +6,7 @@ days = 252 * 10  # 10 years of trading days
 initial_cash = 100000  # Total cash available for investing
 base_investment = 120  # Daily DCA amount
 dip_multiplier = 2  # Extra investment multiplier for dips
-dip_threshold = -0.02  # 2% daily drop considered a dip
+dip_threshold = -0.05  # 2% daily drop considered a dip
 
 # Simulate market returns (upward drift + daily noise)
 np.random.seed(42)
