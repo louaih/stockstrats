@@ -1,16 +1,16 @@
-import numpy as np
 import matplotlib.pyplot as plt
 import yfinance as yf
+from datetime import datetime, timedelta
 
 # Fetch S&P 500 historical data
-sp500 = yf.download('^GSPC', period='10y', interval='1d')
+sp500 = yf.download('^GSPC', period='7y', interval='1d')
 market_prices = sp500.get('Adj Close', sp500['Close']).values  # Use 'Close' if 'Adj Close' is unavailable
 
 days = len(market_prices)  # Adjust days to match available data
 initial_cash = 100000  # Total cash available for investing
 base_investment = 120  # Daily DCA amount
-dip_multiplier = 2  # Extra investment multiplier for dips
-dip_threshold = -0.02  # 2% daily drop considered a dip
+dip_multiplier = 4  # Extra investment multiplier for dips
+dip_threshold = -0.03  # 2% daily drop considered a dip
 
 # Strategy 1: Dollar-Cost Averaging (DCA)
 dca_shares = 0
@@ -51,7 +51,8 @@ plt.figure(figsize=(12, 6))
 plt.plot(dca_shares_over_time, label="DCA", linestyle='dashed')
 plt.plot(dca_dip_shares_over_time, label="DCA + Buy the Dip", linestyle='dotted')
 plt.plot(lsi_value_over_time, label="Lump Sum Investing", linestyle='solid')
-plt.xlabel("Days")
+start_day = datetime.now() - timedelta(days=len(dca_dip_shares_over_time))
+plt.xlabel(start_day.strftime("Days since %d %B, %Y"))
 plt.ylabel("Portfolio Value ($)")
 plt.title("Investment Strategy Comparison Using S&P 500 Data")
 plt.legend()
