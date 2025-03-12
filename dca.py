@@ -1,22 +1,20 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import yfinance as yf
 
-# Simulation parameters
-days = 252 * 10  # 10 years of trading days
+# Fetch S&P 500 historical data
+sp500 = yf.download('^GSPC', period='10y', interval='1d')
+market_prices = sp500.get('Adj Close', sp500['Close']).values  # Use 'Close' if 'Adj Close' is unavailable
+
+days = len(market_prices)  # Adjust days to match available data
 initial_cash = 100000  # Total cash available for investing
 base_investment = 120  # Daily DCA amount
 dip_multiplier = 2  # Extra investment multiplier for dips
-dip_threshold = -0.05  # 2% daily drop considered a dip
-
-# Simulate market returns (upward drift + daily noise)
-np.random.seed(42)
-market_returns = np.random.normal(loc=0.0004, scale=0.01, size=days)  # Avg ~10% annual return
-market_prices = np.cumprod(1 + market_returns) * 100  # Base price of 100
+dip_threshold = -0.02  # 2% daily drop considered a dip
 
 # Strategy 1: Dollar-Cost Averaging (DCA)
 dca_shares = 0
 dca_cash = initial_cash
-
 dca_shares_over_time = []
 
 for price in market_prices:
@@ -28,7 +26,6 @@ for price in market_prices:
 # Strategy 2: DCA + Buying the Dip
 dca_dip_shares = 0
 dca_dip_cash = initial_cash
-
 dca_dip_shares_over_time = []
 
 for i in range(1, days):
@@ -56,7 +53,6 @@ plt.plot(dca_dip_shares_over_time, label="DCA + Buy the Dip", linestyle='dotted'
 plt.plot(lsi_value_over_time, label="Lump Sum Investing", linestyle='solid')
 plt.xlabel("Days")
 plt.ylabel("Portfolio Value ($)")
-plt.title("Investment Strategy Comparison")
+plt.title("Investment Strategy Comparison Using S&P 500 Data")
 plt.legend()
 plt.show()
-
